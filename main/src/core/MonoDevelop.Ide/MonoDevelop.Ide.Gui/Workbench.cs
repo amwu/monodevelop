@@ -296,6 +296,10 @@ namespace MonoDevelop.Ide.Gui
 			}
 		}
 
+		internal MonoDevelopStatusBar BottomBar {
+			get { return workbench.BottomBar; }
+		}
+
 		public void ShowCommandBar (string barId)
 		{
 			workbench.Toolbar.ShowCommandBar (barId);
