@@ -602,7 +602,10 @@ namespace MonoDevelop.Ide.BuildOutputView
 				await SetSpinnerVisibility (true);
 
 				try {
-					BuildOutput.ProcessProjects ();
+					var metadata = new Dictionary<string, string> ();
+					var timer = Counters.ProcessBuildLog.BeginTiming (metadata);
+
+					BuildOutput.ProcessProjects (showDiagnostics, metadata);
 
 					await InvokeAsync (() => {
 						currentSearch = null;
@@ -622,12 +625,9 @@ namespace MonoDevelop.Ide.BuildOutputView
 						FileNameChanged?.Invoke (this, filePathLocation.IsEmpty ?
 													$"{GettextCatalog.GetString ("Build Output")} {DateTime.Now.ToString ("h:mm tt yyyy-MM-dd")}.binlog" :
 													(string) filePathLocation);
-						if (showDiagnostics) {
-							Counters.DiagnosticsViewSelected++;
-						} else {
-							Counters.NormalViewSelected++;
-						}
 					});
+
+					timer.End ();
 				} catch (Exception ex) {
 					processingCompletion.TrySetException (ex);
 				}
