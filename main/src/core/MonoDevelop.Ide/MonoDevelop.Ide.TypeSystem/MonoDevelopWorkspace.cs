@@ -124,7 +124,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
 			// Always use persistent storage regardless of solution size, at least until a consensus is reached
 			// https://github.com/mono/monodevelop/issues/4149 https://github.com/dotnet/roslyn/issues/25453
- 			    .WithChangedOption (Microsoft.CodeAnalysis.Storage.StorageOptions.SolutionSizeThreshold, MonoDevelop.Core.Platform.IsLinux ? int.MaxValue : 0);
+ 			    .WithChangedOption (Microsoft.CodeAnalysis.Storage.StorageOptions.SolutionSizeThreshold, MonoDevelop.Core.Platform.IsLinux ? int.MaxValue : 0)
 				.WithChangedOption (Microsoft.CodeAnalysis.Editor.Shared.Options.FeatureOnOffOptions.AutoFormattingOnReturn, LanguageNames.CSharp, true);
 
 			if (IdeApp.Preferences.EnableSourceAnalysis) {
@@ -1618,18 +1618,9 @@ namespace MonoDevelop.Ide.TypeSystem
 					cts = new CancellationTokenSource ();
 					projectModifiedCts [project] = cts;
 					if (CurrentSolution.ContainsProject (projectId)) {
-<<<<<<< 02386a219cc07592d83448001585f3ba835cf728
 						var projectInfo = LoadProject (project, cts.Token, null).ContinueWith (t => {
 							if (t.IsCanceled)
 								return;
-=======
-						var projectInfo = LoadProject (project, CancellationToken.None, null).ContinueWith (t => {
->>>>>>> [Ide] Implemented format on type & return using
-							if (t.IsFaulted) {
-								LoggingService.LogError ("Failed to reload project", t.Exception);
-								return;
-							}
-<<<<<<< 02386a219cc07592d83448001585f3ba835cf728
 							try {
 								lock (projectModifyLock) {
 									// correct openDocument ids - they may change due to project reload.
@@ -1650,10 +1641,6 @@ namespace MonoDevelop.Ide.TypeSystem
 								LoggingService.LogError ("Error while reloading project " + project.Name, e);
 							}
 						}, cts.Token);
-=======
-							OnProjectReloaded (t.Result);
-						});
->>>>>>> [Ide] Implemented format on type & return using
 					} else {
 						modifiedProjects.Add (project);
 					}
